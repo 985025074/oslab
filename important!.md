@@ -1,0 +1,1 @@
+注意！在lib 下模仿无效！另外，unistd.h本地代码修改不会影响最终bochs内的unistd.h 需要修改hdc挂载内的unistd.h.wsl默认内核无法挂载，详情查看csdn
