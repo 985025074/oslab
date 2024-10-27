@@ -134,7 +134,19 @@ void main(void)		/* This really IS void, no error here. */
 	hd_init();
 	floppy_init();
 	sti();
-	move_to_user_mode();
+	move_to_user_mode();//尽快打开文件系统
+	setup((void *) &drive_info);
+	(void) open("/dev/tty0",O_RDWR,0);
+	(void) dup(0);
+	(void) dup(0);
+	(void) open("/var/process.log",O_CREAT|O_TRUNC|O_WRONLY,0666);
+	//打开日志文件
+	//文件描述符为3 使用fprintk like below;
+	//// 	向stdout打印正在运行的进程的ID
+	// 		fprintk(1, "The ID of running process is %ld", current->pid);
+	//// 	向log文件输出跟踪进程运行轨迹
+	// fprintk(3, "%ld\t%c\t%ld\n", current->pid, 'R', jiffies);
+
 	if (!fork()) {		/* we count on this going ok */
 		init();
 	}
@@ -169,10 +181,7 @@ void init(void)
 {
 	int pid,i;
 
-	setup((void *) &drive_info);
-	(void) open("/dev/tty0",O_RDWR,0);
-	(void) dup(0);
-	(void) dup(0);
+
 	printf("%d buffers = %d bytes buffer space\n\r",NR_BUFFERS,
 		NR_BUFFERS*BLOCK_SIZE);
 	printf("Free mem: %d bytes\n\r",memory_end-main_memory_start);
